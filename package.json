@@ -13,7 +13,7 @@
 	"license": "Apache-2.0",
 	"scripts": {
 		"clean": "lerna clean && lerna run clean",
-		"commit": "git commit -m "auto-commit"",
+		"commit": "git commit -a --allow-empty-message -m",
 		"format": "lerna run format",
 		"test": "lerna run test",
 		"lint": "eslint \"./**/*.js\"",
