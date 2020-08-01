@@ -1,56 +1,56 @@
 {
-  "name": "@carbon/charts-monorepo",
-  "private": true,
-  "description": "Carbon charting components, lerna monorepo",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:carbon-design-system/carbon-charts.git"
-  },
-  "keywords": [
-    "charts"
-  ],
-  "author": "IBM",
-  "license": "Apache-2.0",
-  "scripts": {
-    "clean": "lerna clean && lerna run clean && rm -rf node_modules",
-    "commit": "git-cz",
-    "format": "lerna run format",
-    "test": "lerna run test",
-    "lint": "eslint \"./**/*.js\"",
-    "build": "yarn build-all",
-    "build-all": "bash scripts/build-packages-and-demos.sh",
-    "build-all-demos": "bash scripts/build-demos.sh",
-    "deploy": "bash scripts/deploy.sh"
-  },
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lerna run format",
-      "pre-push": "bash scripts/prepush.sh"
-    }
-  },
-  "release": {
-    "branch": "master"
-  },
-  "devDependencies": {
-    "commitizen": "4.0.3",
-    "cz-conventional-changelog": "3.1.0",
-    "husky": "4.2.1",
-    "lerna": "3.20.2"
-  },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
-  },
-  "maintainers": [
-    {
-      "name": "Eliad Moosavi",
-      "email": "iliadm@ca.ibm.com"
-    }
-  ]
+	"name": "@carbon/charts-monorepo",
+	"private": true,
+	"description": "Carbon charting components, lerna monorepo",
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:carbon-design-system/carbon-charts.git"
+	},
+	"keywords": [
+		"charts"
+	],
+	"author": "IBM",
+	"license": "Apache-2.0",
+	"scripts": {
+		"clean": "lerna clean && lerna run clean && rm -rf node_modules",
+		"commit": "git-cz",
+		"format": "lerna run format",
+		"test": "lerna run test",
+		"lint": "eslint \"./**/*.js\"",
+		"build": "yarn build-all",
+		"build-all": "bash scripts/build-packages-and-demos.sh",
+		"build-all-demos": "bash scripts/build-demos.sh",
+		"deploy": "bash scripts/deploy.sh"
+	},
+	"workspaces": {
+		"packages": [
+			"packages/*"
+		]
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lerna run format",
+			"pre-push": "bash scripts/prepush.sh"
+		}
+	},
+	"release": {
+		"branch": "master"
+	},
+	"devDependencies": {
+		"commitizen": "4.0.3",
+		"cz-conventional-changelog": "3.1.0",
+		"husky": "4.2.1",
+		"lerna": "3.20.2"
+	},
+	"config": {
+		"commitizen": {
+			"path": "cz-conventional-changelog"
+		}
+	},
+	"maintainers": [
+		{
+			"name": "Eliad Moosavi",
+			"email": "iliadm@ca.ibm.com"
+		}
+	]
 }
