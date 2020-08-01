@@ -16,7 +16,7 @@
 		"commit": "git-cz",
 		"format": "lerna run format",
 		"test": "lerna run test",
-  		"lint": "eslint \"./**/*.js\"",
+		"lint": "eslint \"./**/*.js\"",
 		"build": "yarn build-all",
 		"build-all": "bash scripts/build-packages-and-demos.sh",
 		"build-all-demos": "bash scripts/build-demos.sh",
