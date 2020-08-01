@@ -21,7 +21,8 @@ export * from "./graphs/scatter-stacked";
 export * from "./graphs/pie";
 export * from "./graphs/gauge";
 export * from "./graphs/donut";
-export * from "./graphs/skeleton";
+// Advanced charts graphs
+export * from "./graphs/network";
 
 // Layout
 export * from "./layout/spacer";

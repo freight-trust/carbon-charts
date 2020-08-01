@@ -11,7 +11,7 @@ import {
 	GaugeChartOptions,
 	DonutChartOptions,
 	BubbleChartOptions,
-	RadarChartOptions,
+	ZoomableChartOptions,
 	// Components
 	GridOptions,
 	AxesOptions,
@@ -19,12 +19,9 @@ import {
 	TooltipOptions,
 	LegendOptions,
 	LegendPositions,
-	TruncationTypes,
 	StackedBarOptions,
-	MeterChartOptions,
-	GaugeTypes,
-	Alignments,
-	ZoomBarsOptions
+	// Advanced Charts
+	NetworkChartOptions,
 } from "./interfaces";
 import enUSLocaleObject from "date-fns/locale/en-US/index";
 
@@ -83,10 +80,14 @@ export const grid: GridOptions = {
  * Tooltip options
  */
 export const baseTooltip: TooltipOptions = {
-	horizontalOffset: 10,
-	showTotal: true,
-	valueFormatter: (d) => d.toLocaleString(),
-	truncation: standardTruncationOptions
+	datapoint: {
+		horizontalOffset: 10,
+		enabled: true,
+	},
+	title: {
+		verticalOffset: .75,
+		width: .4
+	}
 };
 
 // These options will be managed by Tools.mergeDefaultChartOptions
@@ -163,6 +164,13 @@ const axisChart: AxisChartOptions = Tools.merge({}, chart, {
 		}
 	} as ZoomBarsOptions
 } as AxisChartOptions);
+
+/**
+ * Options common to any chart with an axis
+ */
+const zoomableChart: ZoomableChartOptions = Tools.merge({}, chart, {
+	initialZoom: 1
+} as ZoomableChartOptions);
 
 /**
  * options specific to simple bar charts
@@ -329,54 +337,12 @@ const donutChart: DonutChartOptions = Tools.merge({}, pieChart, {
 	}
 } as DonutChartOptions);
 
-const meterChart: MeterChartOptions = Tools.merge({}, chart, {
-	legend: {
-		enabled: false
-	},
-	meter: {
-		height: 8,
-		statusBar: {
-			paddingRight: 5,
-			percentageIndicator: {
-				enabled: true
-			}
-		},
-		status: {
-			indicatorSize: 16,
-			paddingLeft: 15
-		}
-	}
-});
-
 /**
- * options specific to radar charts
+ * options specific to donut charts
  */
-const radarChart: RadarChartOptions = Tools.merge({}, chart, {
-	radar: {
-		axes: {
-			angle: "key",
-			value: "value"
-		},
-		opacity: {
-			unselected: 0.1,
-			selected: 0.3
-		},
-		xLabelPadding: 10,
-		yLabelPadding: 8,
-		yTicksNumber: 4,
-		minRange: 10,
-		xAxisRectHeight: 50,
-		dotsRadius: 5,
-		alignment: Alignments.LEFT
-	},
-	tooltip: {
-		gridline: {
-			enabled: true
-		},
-		valueFormatter: (value) =>
-			value !== null && value !== undefined ? value : "N/A"
-	}
-} as RadarChartOptions);
+const networkChart: NetworkChartOptions = Tools.merge({}, pieChart, {
+	collapsed: false
+} as NetworkChartOptions);
 
 export const options = {
 	chart,
@@ -391,9 +357,9 @@ export const options = {
 	scatterChart,
 	pieChart,
 	donutChart,
-	meterChart,
-	radarChart,
-	gaugeChart
+	// Advanced Charts
+	networkChart,
+	zoomableChart
 };
 
 /**

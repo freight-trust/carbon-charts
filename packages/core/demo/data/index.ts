@@ -3,6 +3,7 @@ import * as barDemos from "./bar";
 import * as bubbleDemos from "./bubble";
 import * as donutDemos from "./donut";
 import * as lineDemos from "./line";
+import * as networkDemos from "./network";
 import * as pieDemos from "./pie";
 import * as gaugeDemos from "./gauge";
 import * as scatterDemos from "./scatter";
@@ -17,7 +18,7 @@ export * from "./bar";
 export * from "./bubble";
 export * from "./donut";
 export * from "./line";
-export * from "./meter";
+export * from "./network";
 export * from "./pie";
 export * from "./gauge";
 export * from "./scatter";
@@ -91,15 +92,8 @@ export const chartTypes = {
 		angular: "ibm-donut-chart",
 		vue: "ccv-donut-chart"
 	},
-	MeterChart: {
-		vanilla: "MeterChart",
-		angular: "ibm-meter-chart",
-		vue: "ccv-meter-chart"
-	},
-	RadarChart: {
-		vanilla: "RadarChart",
-		angular: "ibm-radar-chart",
-		vue: "ccv-radar-chart"
+	NetworkChart: {
+		vanilla: "NetworkChart"
 	}
 };
 
@@ -825,6 +819,16 @@ let allDemoGroups = [
 				data: zoomBarDemos.zoomBarSkeletonData,
 				chartType: chartTypes.StackedBarChart,
 				isDemoExample: false
+			}
+		]
+	},
+	{
+		title: "Network",
+		demos: [
+			{
+				options: networkDemos.networkOptions,
+				data: networkDemos.networkData,
+				chartType: chartTypes.NetworkChart
 			}
 		]
 	}

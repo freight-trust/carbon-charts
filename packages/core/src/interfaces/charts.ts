@@ -120,6 +120,13 @@ export interface AxisChartOptions extends BaseChartOptions {
 }
 
 /**
+ * Options common to any chart that is zoomable
+ */
+export interface ZoomableChartOptions extends BaseChartOptions {
+	initialZoom?: number;
+}
+
+/**
  * options specific to bar charts
  */
 export interface BarChartOptions extends AxisChartOptions {
@@ -245,26 +252,6 @@ export interface PieChartOptions extends BaseChartOptions {
 }
 
 /**
- * options specific to gauge charts
- */
-export interface GaugeChartOptions extends PieChartOptions {
-	gauge?: {
-		arcWidth?: number;
-		deltaArrow?: {
-			direction?: ArrowDirections;
-			size?: Function;
-			enabled: Boolean;
-		};
-		status?: Statuses;
-		deltaFontSize?: Function;
-		numberSpacing?: number;
-		numberFormatter?: Function;
-		valueFontSize?: Function;
-		type?: GaugeTypes;
-	};
-}
-
-/**
  * options specific to donut charts
  */
 export interface DonutChartOptions extends PieChartOptions {
@@ -323,4 +310,11 @@ export interface RadarChartOptions extends BaseChartOptions {
 		dotsRadius: number;
 		alignment?: Alignments;
 	};
+}
+
+/**
+ * options specific to network charts
+ */
+export interface NetworkChartOptions extends ZoomableChartOptions {
+	collapsed?: boolean;
 }

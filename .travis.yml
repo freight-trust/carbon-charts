@@ -13,35 +13,9 @@ before_install:
   - export PATH="$HOME/.yarn/bin:$PATH"
   - .travis/before_install.sh
   - "google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &"
-install: yarn --offline
+install: yarn
 script:
   - yarn run lint
   - yarn run build-all
   - yarn run test
 sudo: false
-deploy:
-  -
-    provider: script
-    script: "bash ./scripts/deploy.sh"
-    skip_cleanup: true
-    true:
-      tags: true
-  -
-    provider: script
-    script: "bash ./scripts/deploy.sh"
-    skip_cleanup: true
-    true:
-      branch: master
-  -
-    allow-empty-commit: true
-    email: carbon@us.ibm.com
-    github-token: $GH_TOKEN
-    keep-history: true
-    local-dir: pages
-    name: carbon-bot
-    provider: pages
-    skip_cleanup: true
-    true:
-      tags: true
-notifications:
-  email: false
