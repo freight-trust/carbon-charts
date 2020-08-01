@@ -29,7 +29,7 @@ then
 fi
 
 # if package locks updated, add them
-if [ ! -z "`git ls-files -m | grep package-lock.json`" ]
+if [ ! -z "$(git ls-files -m | grep package-lock.json)" ]
 then
 	git add package-lock.json ./packages/*/package-lock.json
 	git commit -m "Update package-lock.json files"
