@@ -13,19 +13,19 @@ import CcvStackedAreaChart from './ccv-stacked-area-chart.vue';
 import CcvStackedBarChart from './ccv-stacked-bar-chart.vue';
 
 const components = [
-  CcvAreaChart,
-  CcvStackedAreaChart,
-  CcvSimpleBarChart,
-  CcvGroupedBarChart,
-  CcvStackedBarChart,
-  CcvBubbleChart,
-  CcvDonutChart,
-  CcvGaugeChart,
-  CcvLineChart,
-  CcvPieChart,
-  CcvScatterChart,
-  CcvMeterChart,
-  CcvRadarChart,
+	CcvAreaChart,
+	CcvStackedAreaChart,
+	CcvSimpleBarChart,
+	CcvGroupedBarChart,
+	CcvStackedBarChart,
+	CcvBubbleChart,
+	CcvDonutChart,
+	CcvGaugeChart,
+	CcvLineChart,
+	CcvPieChart,
+	CcvScatterChart,
+	CcvMeterChart,
+	CcvRadarChart,
 ];
 
 /*
@@ -34,26 +34,26 @@ const components = [
   components.
 */
 export default {
-  // options is an array of components to be registered
-  // e.g. ['c-button', 'c-modal']
-  install(Vue, options) {
-    if (typeof options === 'undefined') {
-      for (let c of components) {
-        Vue.component(c.name, c);
-      }
-    } else {
-      if (!(options instanceof Array)) {
-        throw new TypeError('options must be an array');
-      }
+	// options is an array of components to be registered
+	// e.g. ['c-button', 'c-modal']
+	install(Vue, options) {
+		if (typeof options === 'undefined') {
+			for (let c of components) {
+				Vue.component(c.name, c);
+			}
+		} else {
+			if (!(options instanceof Array)) {
+				throw new TypeError('options must be an array');
+			}
 
-      for (let c of components) {
-        // register only components specified in the options
-        if (options.includes(c.name)) {
-          Vue.component(c.name, c);
-        }
-      }
-    }
-  },
+			for (let c of components) {
+				// register only components specified in the options
+				if (options.includes(c.name)) {
+					Vue.component(c.name, c);
+				}
+			}
+		}
+	},
 };
 
 /*
@@ -61,17 +61,17 @@ export default {
   alternative to loading them all via a Vue plug-in.
 */
 export {
-  CcvAreaChart,
-  CcvStackedAreaChart,
-  CcvSimpleBarChart,
-  CcvGroupedBarChart,
-  CcvStackedBarChart,
-  CcvBubbleChart,
-  CcvDonutChart,
-  CcvGaugeChart,
-  CcvLineChart,
-  CcvPieChart,
-  CcvScatterChart,
-  CcvMeterChart,
-  CcvRadarChart,
+	CcvAreaChart,
+	CcvStackedAreaChart,
+	CcvSimpleBarChart,
+	CcvGroupedBarChart,
+	CcvStackedBarChart,
+	CcvBubbleChart,
+	CcvDonutChart,
+	CcvGaugeChart,
+	CcvLineChart,
+	CcvPieChart,
+	CcvScatterChart,
+	CcvMeterChart,
+	CcvRadarChart,
 };
