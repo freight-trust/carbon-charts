@@ -4,19 +4,19 @@
 	"description": "Carbon charting components, lerna monorepo",
 	"repository": {
 		"type": "git",
-		"url": "git@github.com:carbon-design-system/carbon-charts.git"
+		"url": "git@github.com/freight-trust/carbon-charts/.git"
 	},
 	"keywords": [
 		"charts"
 	],
-	"author": "IBM",
+	"author": "SEE LICENSE",
 	"license": "Apache-2.0",
 	"scripts": {
-		"clean": "lerna clean && lerna run clean && rm -rf node_modules",
-		"commit": "git-cz",
+		"clean": "lerna clean && lerna run clean",
+		"commit": "git commit -a --allow-empty-message -m",
 		"format": "lerna run format",
 		"test": "lerna run test",
-		"lint": "lerna run lint",
+		"lint": "eslint \"./**/*.js\"",
 		"build": "yarn build-all",
 		"build-all": "bash scripts/build-packages-and-demos.sh",
 		"build-all-demos": "bash scripts/build-demos.sh",
@@ -34,7 +34,7 @@
 		}
 	},
 	"release": {
-		"branch": "master"
+		"branch": "30.7"
 	},
 	"devDependencies": {
 		"commitizen": "4.0.3",
