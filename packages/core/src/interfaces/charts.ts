@@ -88,7 +88,7 @@ export interface BaseChartOptions {
 		/**
 		 * used to simulate data loading
 		 */
-		loading?: Boolean;
+		loading?: boolean;
 		/**
 		 * options related to pre-selected data groups
 		 * Remains empty if every legend item is active or dataset doesn't have the data groups.
@@ -117,6 +117,10 @@ export interface AxisChartOptions extends BaseChartOptions {
 	 * zoombar configuration
 	 */
 	zoomBar?: ZoomBarsOptions;
+	/**
+	 * enable or disable scatter dot
+	 */
+	scatterDotEnabled?: boolean;
 }
 
 /**
@@ -179,6 +183,10 @@ export interface BubbleChartOptions extends AxisChartOptions {
  */
 export interface LineChartOptions extends ScatterChartOptions {
 	/**
+	 * sparkline loading
+	 */
+	sparklineLoading?: boolean;
+	/**
 	 * options for the curve of the line
 	 */
 	curve?:
@@ -192,6 +200,10 @@ export interface LineChartOptions extends ScatterChartOptions {
  * options specific to area charts
  */
 export interface AreaChartOptions extends AxisChartOptions {
+	/**
+	 * enable gradient or not
+	 */
+	gradientEnabled?: boolean;
 	/**
 	 * options for the curve of the line
 	 */
@@ -221,22 +233,6 @@ export interface StackedAreaChartOptions extends ScatterChartOptions {
  */
 export interface PieChartOptions extends BaseChartOptions {
 	pie?: {
-		radiusOffset?: number;
-		innerRadius?: number;
-		padAngle?: number;
-		hoverArc?: {
-			outerRadiusOffset?: number;
-		};
-		xOffset?: number;
-		yOffset?: number;
-		yOffsetCallout?: number;
-		callout?: {
-			minSliceDegree?: number;
-			offsetX?: number;
-			offsetY?: number;
-			horizontalLineLength?: number;
-			textMargin?: number;
-		};
 		labels?: {
 			formatter?: Function;
 		};
@@ -284,20 +280,12 @@ export interface MeterChartOptions extends BaseChartOptions {
 	meter?: {
 		height?: number;
 		title?: {
-			/**
-			 * offsets the percentage value from the title
-			 */
-			paddingRight?: number;
 			percentageIndicator?: {
 				/**
 				 * rendering of the percentage value relative to the dataset within title
 				 */
 				enabled?: boolean;
 			};
-		};
-		status?: {
-			indicatorSize?: number;
-			paddingLeft?: number;
 		};
 	};
 }
@@ -307,20 +295,10 @@ export interface MeterChartOptions extends BaseChartOptions {
  */
 export interface RadarChartOptions extends BaseChartOptions {
 	radar?: {
-		opacity: {
-			unselected: number;
-			selected: number;
-		};
 		axes: {
 			angle: string;
 			value: string;
 		};
-		xLabelPadding: number;
-		yLabelPadding: number;
-		yTicksNumber: number;
-		minRange: number;
-		xAxisRectHeight: number;
-		dotsRadius: number;
 		alignment?: Alignments;
 	};
 }

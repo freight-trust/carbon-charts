@@ -51,6 +51,13 @@ export class Scatter extends Component {
 	}
 
 	render(animate: boolean) {
+		const isScatterEnabled = Tools.getProperty(this.model.getOptions(), "scatterDotEnabled");
+		if (!this.configs.alwaysEnableScatterDot) {
+			if (!isScatterEnabled) {
+				return;
+			}
+		}
+
 		// Grab container SVG
 		const svg = this.getContainerSVG({ withinChartClip: true });
 
@@ -253,7 +260,7 @@ export class Scatter extends Component {
 				)
 			)
 			.attr("opacity", 1);
-	};
+	}
 
 	handleChartHolderOnMouseOut = (event: CustomEvent) => {
 		this.parent
@@ -264,7 +271,7 @@ export class Scatter extends Component {
 				)
 			)
 			.attr("opacity", 0);
-	};
+	}
 
 	handleLegendOnHover = (event: CustomEvent) => {
 		const { hoveredElement } = event.detail;
@@ -279,7 +286,7 @@ export class Scatter extends Component {
 			.attr("opacity", (d) =>
 				d[groupMapsTo] !== hoveredElement.datum()["name"] ? 0.3 : 1
 			);
-	};
+	}
 
 	handleLegendMouseOut = (event: CustomEvent) => {
 		this.parent
@@ -290,7 +297,16 @@ export class Scatter extends Component {
 				)
 			)
 			.attr("opacity", 1);
-	};
+	}
+
+	getTooltipData(hoveredX, hoveredY) {
+		return this.model.getDisplayData().filter((d) => {
+			return (
+				hoveredX === this.services.cartesianScales.getDomainValue(d) &&
+				hoveredY === this.services.cartesianScales.getRangeValue(d)
+			);
+		});
+	}
 
 	addEventListeners() {
 		const self = this;
@@ -318,23 +334,11 @@ export class Scatter extends Component {
 				const hoveredY = self.services.cartesianScales.getRangeValue(
 					datum
 				);
-				const overlappingData = self.model
-					.getDisplayData()
-					.filter((d) => {
-						return (
-							hoveredX ===
-								self.services.cartesianScales.getDomainValue(
-									d
-								) &&
-							hoveredY ===
-								self.services.cartesianScales.getRangeValue(d)
-						);
-					});
-
+				const tooltipData = self.getTooltipData(hoveredX, hoveredY);
 				// Show tooltip
 				self.services.events.dispatchEvent(Events.Tooltip.SHOW, {
 					hoveredElement,
-					data: overlappingData
+					data: tooltipData
 				});
 
 				// Dispatch mouse event

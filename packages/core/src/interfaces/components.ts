@@ -1,4 +1,9 @@
-import { LayoutGrowth, LegendPositions, Alignments } from "./enums";
+import {
+	LayoutGrowth,
+	LegendPositions,
+	Alignments,
+	ZoomBarTypes
+} from "./enums";
 import { Component } from "../components/component";
 import { TruncationOptions } from "./truncation";
 
@@ -34,24 +39,16 @@ export interface LegendOptions {
 	 * the clickability of legend items
 	 */
 	clickable?: boolean;
-	items?: {
-		status?: {
-			ACTIVE?: Number;
-			DISABLED?: Number;
-		};
-		horizontalSpace?: Number;
-		verticalSpace?: Number;
-		textYOffset?: Number;
-	};
-	checkbox?: {
-		radius?: Number;
-		spaceAfter?: Number;
-	};
 	truncation?: TruncationOptions;
 	alignment?: Alignments;
+	order?: string[];
 }
 
 export interface TooltipOptions {
+	/**
+	 * enable or disable tooltip
+	 */
+	enabled?: boolean;
 	/**
 	 * a function to format the tooltip values
 	 */
@@ -61,10 +58,6 @@ export interface TooltipOptions {
 	 * passed an array or object with the data, and then the default tooltip markup
 	 */
 	customHTML?: Function;
-	/**
-	 * offset of the tooltip from the mouse position
-	 */
-	horizontalOffset?: number;
 	/**
 	 * show total of items
 	 */
@@ -96,12 +89,20 @@ export interface ThresholdOptions {
 
 export interface GridOptions {
 	y?: {
+		enabled?: boolean;
 		numberOfTicks?: number;
 	};
 	x?: {
+		enabled?: boolean;
 		numberOfTicks?: number;
 	};
-	strokeColor?: string;
+}
+
+/**
+ * Ruler options
+ */
+export interface RulerOptions {
+	enabled?: boolean;
 }
 
 export interface BarOptions {
@@ -131,7 +132,10 @@ export interface ZoomBarOptions {
 	 * is the zoom-bar visible or not
 	 */
 	enabled?: boolean;
-
+	/**
+	 * whether the zoom bar is showing a slider view or a graph view etc.
+	 */
+	type?: ZoomBarTypes;
 	/**
 	 * an two element array which represents the initial zoom domain
 	 */

@@ -136,6 +136,12 @@ let allDemoGroups = [
 				data: areaDemos.stackedAreaTimeSeriesData,
 				chartType: chartTypes.StackedAreaChart,
 				isDemoExample: true
+			},
+			{
+				options: areaDemos.sparklineOptions,
+				data: areaDemos.sparklineTimeSeriesData,
+				chartType: chartTypes.AreaChart,
+				isDemoExample: true
 			}
 		]
 	},
@@ -154,6 +160,11 @@ let allDemoGroups = [
 				data: barDemos.simpleBarDataCustomTicks,
 				chartType: chartTypes.SimpleBarChart,
 				isDemoExample: false
+			},
+			{
+				options: barDemos.simpleBarCustomLegendOrderOptions,
+				data: barDemos.simpleBarData,
+				chartType: chartTypes.SimpleBarChart
 			},
 			{
 				options: barDemos.simpleBarCenteredLegendOptions,
@@ -467,6 +478,11 @@ let allDemoGroups = [
 				data: lineDemos.lineSkeletonData,
 				chartType: chartTypes.LineChart,
 				isDemoExample: false
+			},
+			{
+				options: lineDemos.sparklineLoadingOptions,
+				data: lineDemos.sparklineLoadingTimeSeriesData,
+				chartType: chartTypes.LineChart
 			}
 		]
 	},

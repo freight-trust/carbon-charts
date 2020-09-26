@@ -14,17 +14,20 @@ import {
 	RadarChartOptions,
 	// Components
 	GridOptions,
+	RulerOptions,
 	AxesOptions,
 	TimeScaleOptions,
 	TooltipOptions,
 	LegendOptions,
-	LegendPositions,
-	TruncationTypes,
 	StackedBarOptions,
 	MeterChartOptions,
-	GaugeTypes,
+	ZoomBarsOptions,
+	// ENUMS
 	Alignments,
-	ZoomBarsOptions
+	GaugeTypes,
+	LegendPositions,
+	TruncationTypes,
+	ZoomBarTypes
 } from "./interfaces";
 import enUSLocaleObject from "date-fns/locale/en-US/index";
 
@@ -46,25 +49,13 @@ const standardTruncationOptions = {
 /**
  * Legend options
  */
-export const legend: LegendOptions = {
+const legend: LegendOptions = {
 	enabled: true,
 	position: LegendPositions.BOTTOM,
 	clickable: true,
-	items: {
-		status: {
-			ACTIVE: 1,
-			DISABLED: 0
-		},
-		horizontalSpace: 12,
-		verticalSpace: 24,
-		textYOffset: 8
-	},
-	checkbox: {
-		radius: 6.5,
-		spaceAfter: 4
-	},
 	truncation: standardTruncationOptions,
-	alignment: Alignments.LEFT
+	alignment: Alignments.LEFT,
+	order: null
 };
 
 /**
@@ -72,18 +63,30 @@ export const legend: LegendOptions = {
  */
 export const grid: GridOptions = {
 	x: {
-		numberOfTicks: 5
+		// set enable to false will not draw grid and stroke of grid backdrop
+		enabled: true,
+		numberOfTicks: 15
 	},
 	y: {
+		// set enable to false will not draw grid and stroke of grid backdrop
+		enabled: true,
 		numberOfTicks: 5
 	}
+};
+
+/**
+ * Ruler options
+ */
+export const ruler: RulerOptions = {
+	// enable or disable ruler
+	enabled: true
 };
 
 /**
  * Tooltip options
  */
 export const baseTooltip: TooltipOptions = {
-	horizontalOffset: 10,
+	enabled: true,
 	showTotal: true,
 	valueFormatter: (d) => d.toLocaleString(),
 	truncation: standardTruncationOptions
@@ -94,18 +97,22 @@ export const baseTooltip: TooltipOptions = {
 // and by TwoDimensionalAxes.
 const axes: AxesOptions = {
 	top: {
+		visible: true,
 		includeZero: true,
 		truncation: standardTruncationOptions
 	},
 	bottom: {
+		visible: true,
 		includeZero: true,
 		truncation: standardTruncationOptions
 	},
 	left: {
+		visible: true,
 		includeZero: true,
 		truncation: standardTruncationOptions
 	},
 	right: {
+		visible: true,
 		includeZero: true,
 		truncation: standardTruncationOptions
 	}
@@ -157,9 +164,12 @@ const axisChart: AxisChartOptions = Tools.merge({}, chart, {
 	axes,
 	timeScale,
 	grid,
+	ruler,
+	scatterDotEnabled: true,
 	zoomBar: {
 		top: {
-			enabled: false
+			enabled: false,
+			type: ZoomBarTypes.GRAPH_VIEW
 		}
 	} as ZoomBarsOptions
 } as AxisChartOptions);
@@ -207,6 +217,7 @@ const stackedBarChart: StackedBarChartOptions = Tools.merge({}, baseBarChart, {
  * options specific to line charts
  */
 const lineChart: LineChartOptions = Tools.merge({}, axisChart, {
+	sparklineLoading: false,
 	points: {
 		// default point radius to 3
 		radius: 3,
@@ -218,6 +229,7 @@ const lineChart: LineChartOptions = Tools.merge({}, axisChart, {
  * options specific to area charts
  */
 const areaChart: AreaChartOptions = Tools.merge({}, lineChart, {
+	gradientEnabled: true,
 	timeScale: Tools.merge(timeScale, {
 		addSpaceOnEdges: 0
 	} as TimeScaleOptions)
@@ -265,22 +277,6 @@ const bubbleChart: BubbleChartOptions = Tools.merge({}, axisChart, {
  */
 const pieChart: PieChartOptions = Tools.merge({}, chart, {
 	pie: {
-		radiusOffset: -15,
-		innerRadius: 2,
-		padAngle: 0.007,
-		hoverArc: {
-			outerRadiusOffset: 3
-		},
-		xOffset: 30,
-		yOffset: 20,
-		yOffsetCallout: 10,
-		callout: {
-			minSliceDegree: 5,
-			offsetX: 15,
-			offsetY: 12,
-			horizontalLineLength: 8,
-			textMargin: 2
-		},
 		labels: {
 			formatter: null
 		},
@@ -336,17 +332,12 @@ const meterChart: MeterChartOptions = Tools.merge({}, chart, {
 	meter: {
 		height: 8,
 		statusBar: {
-			paddingRight: 5,
 			percentageIndicator: {
 				enabled: true
 			}
-		},
-		status: {
-			indicatorSize: 16,
-			paddingLeft: 15
 		}
 	}
-});
+} as MeterChartOptions);
 
 /**
  * options specific to radar charts
@@ -357,16 +348,6 @@ const radarChart: RadarChartOptions = Tools.merge({}, chart, {
 			angle: "key",
 			value: "value"
 		},
-		opacity: {
-			unselected: 0.1,
-			selected: 0.3
-		},
-		xLabelPadding: 10,
-		yLabelPadding: 8,
-		yTicksNumber: 4,
-		minRange: 10,
-		xAxisRectHeight: 50,
-		dotsRadius: 5,
 		alignment: Alignments.LEFT
 	},
 	tooltip: {
@@ -396,75 +377,4 @@ export const options = {
 	gaugeChart
 };
 
-/**
- * Options for line behaviour
- */
-export const lines = {
-	opacity: {
-		unselected: 0.3,
-		selected: 1
-	}
-};
-
-/**
- * Options for area behaviour
- */
-export const area = {
-	opacity: {
-		unselected: 0,
-		selected: 0.4
-	}
-};
-
-/**
- * Options for area behaviour
- */
-export const areas = {
-	opacity: {
-		unselected: 0.3,
-		selected: 1
-	}
-};
-
-/**
- * Base transition configuration
- */
-export const transitions = {
-	default: {
-		duration: 300
-	},
-	pie_slice_mouseover: {
-		duration: 100
-	},
-	pie_chart_titles: {
-		duration: 375
-	},
-	graph_element_mouseover_fill_update: {
-		duration: 100
-	},
-	graph_element_mouseout_fill_update: {
-		duration: 100
-	}
-};
-
-export const axis = {
-	ticks: {
-		number: 7,
-		rotateIfSmallerThan: 30
-	},
-	paddingRatio: 0.1
-};
-
-export const spacers = {
-	default: {
-		size: 24
-	}
-};
-
-export const zoomBar = {
-	height: 32,
-	spacerHeight: 20
-};
-
-export const tickSpaceRatioVertical = 2.5;
-export const tickSpaceRatioHorizontal = 3.5;
+export * from "./configuration-non-customizable";
