@@ -3,7 +3,8 @@ import {
 	LegendOptions,
 	TooltipOptions,
 	GridOptions,
-	AxesOptions
+	AxesOptions,
+	ZoomBarsOptions
 } from "./index";
 import { BarOptions, StackedBarOptions } from "./components";
 import { TimeScaleOptions } from "./axis-scales";
@@ -112,6 +113,10 @@ export interface AxisChartOptions extends BaseChartOptions {
 	axes?: AxesOptions;
 	grid?: GridOptions;
 	timeScale?: TimeScaleOptions;
+	/**
+	 * zoombar configuration
+	 */
+	zoomBar?: ZoomBarsOptions;
 }
 
 /**

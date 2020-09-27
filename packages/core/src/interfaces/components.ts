@@ -112,3 +112,32 @@ export interface BarOptions {
 export interface StackedBarOptions extends BarOptions {
 	dividerSize?: number;
 }
+
+/**
+ * customize the ZoomBars in a chart
+ */
+export interface ZoomBarsOptions {
+	/**
+	 * currently only the top position is supported
+	 */
+	top?: ZoomBarOptions;
+}
+
+/**
+ * customize the ZoomBar component
+ */
+export interface ZoomBarOptions {
+	/**
+	 * is the zoom-bar visible or not
+	 */
+	enabled?: boolean;
+
+	/**
+	 * an two element array which represents the initial zoom domain
+	 */
+	initialZoomDomain?: Object[];
+	/**
+	 * options related to zoom bar data
+	 */
+	data?: Object[];
+}
