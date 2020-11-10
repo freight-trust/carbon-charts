@@ -1,6 +1,6 @@
 // Internal Imports
 import { Component } from "../component";
-import { Roles, Events } from "../../interfaces";
+import { Roles, Events, ColorClassNameTypes } from "../../interfaces";
 import { Tools } from "../../tools";
 
 // D3 Imports
@@ -43,14 +43,21 @@ export class Scatter extends Component {
 		if (zoomDomain !== undefined) {
 			return data.filter(
 				(d) =>
-					d[domainIdentifier] > zoomDomain[0] &&
-					d[domainIdentifier] < zoomDomain[1]
+					d[domainIdentifier].getTime() > zoomDomain[0].getTime() &&
+					d[domainIdentifier].getTime() < zoomDomain[1].getTime()
 			);
 		}
 		return data;
 	}
 
 	render(animate: boolean) {
+		const isScatterEnabled =
+			Tools.getProperty(this.model.getOptions(), "points", "enabled") ||
+			Tools.getProperty(this.model.getOptions(), "bubble", "enabled");
+		if (!isScatterEnabled) {
+			return;
+		}
+
 		// Grab container SVG
 		const svg = this.getContainerSVG({ withinChartClip: true });
 
@@ -182,6 +189,23 @@ export class Scatter extends Component {
 		selection
 			.raise()
 			.classed("dot", true)
+			.attr("class", (d) => {
+				const isFilled = this.model.getIsFilled(
+					d[groupMapsTo],
+					d[domainIdentifier],
+					d,
+					filled
+				);
+				const classNamesNeeded = isFilled
+					? [ColorClassNameTypes.FILL, ColorClassNameTypes.STROKE]
+					: [ColorClassNameTypes.STROKE];
+
+				return this.model.getColorClassName({
+					classNameTypes: classNamesNeeded,
+					dataGroupName: d[groupMapsTo],
+					originalClassName: "dot"
+				});
+			})
 			// Set class to highlight the dots that are above all the thresholds, in both directions (vertical and horizontal)
 			.classed("threshold-anomaly", (d, i) =>
 				this.isDatapointThresholdAnomaly(d, i)
@@ -292,9 +316,18 @@ export class Scatter extends Component {
 			.attr("opacity", 1);
 	};
 
+	getTooltipData(hoveredX, hoveredY) {
+		return this.model.getDisplayData().filter((d) => {
+			return (
+				hoveredX === this.services.cartesianScales.getDomainValue(d) &&
+				hoveredY === this.services.cartesianScales.getRangeValue(d)
+			);
+		});
+	}
+
 	addEventListeners() {
 		const self = this;
-		const { groupMapsTo } = this.model.getOptions().data;
+		const { groupMapsTo } = self.model.getOptions().data;
 		const domainIdentifier = this.services.cartesianScales.getDomainIdentifier();
 
 		this.parent
@@ -304,13 +337,21 @@ export class Scatter extends Component {
 
 				hoveredElement
 					.classed("hovered", true)
-					.style("fill", (d: any) =>
+					.attr("class", (d) =>
+						self.model.getColorClassName({
+							classNameTypes: [ColorClassNameTypes.FILL],
+							dataGroupName: d[groupMapsTo],
+							originalClassName: hoveredElement.attr("class")
+						})
+					)
+					.style("fill", (d) =>
 						self.model.getFillColor(
 							d[groupMapsTo],
 							d[domainIdentifier],
 							d
 						)
-					);
+					)
+					.classed("unfilled", false);
 
 				const hoveredX = self.services.cartesianScales.getDomainValue(
 					datum
@@ -318,23 +359,11 @@ export class Scatter extends Component {
 				const hoveredY = self.services.cartesianScales.getRangeValue(
 					datum
 				);
-				const overlappingData = self.model
-					.getDisplayData()
-					.filter((d) => {
-						return (
-							hoveredX ===
-								self.services.cartesianScales.getDomainValue(
-									d
-								) &&
-							hoveredY ===
-								self.services.cartesianScales.getRangeValue(d)
-						);
-					});
-
+				const tooltipData = self.getTooltipData(hoveredX, hoveredY);
 				// Show tooltip
 				self.services.events.dispatchEvent(Events.Tooltip.SHOW, {
 					hoveredElement,
-					data: overlappingData
+					data: tooltipData
 				});
 
 				// Dispatch mouse event
@@ -374,7 +403,11 @@ export class Scatter extends Component {
 				const hoveredElement = select(this);
 				hoveredElement.classed("hovered", false);
 
-				if (!self.configs.filled) {
+				if (
+					!self.configs.filled &&
+					hoveredElement.attr("fill-opacity") === "1"
+				) {
+					hoveredElement.classed("unfilled", true);
 					hoveredElement.style("fill", null);
 				}
 

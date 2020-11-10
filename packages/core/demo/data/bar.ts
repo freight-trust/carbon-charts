@@ -93,6 +93,41 @@ export const simpleBarOptions = {
 	}
 };
 
+export const simpleBarColorPaletteOptions = {
+	title: "Simple bar (color palette)",
+	axes: {
+		left: {
+			mapsTo: "value"
+		},
+		bottom: {
+			scaleType: "labels",
+			mapsTo: "group"
+		}
+	},
+	color: {
+		pairing: {
+			numberOfVariants: 3,
+			option: 2
+		}
+	}
+};
+
+export const simpleBarCustomLegendOrderOptions = {
+	title: "Simple bar (custom legend order)",
+	axes: {
+		left: {
+			mapsTo: "value"
+		},
+		bottom: {
+			mapsTo: "group",
+			scaleType: "labels"
+		}
+	},
+	legend: {
+		order: ["Restocking", "Misc", "Sold", "Qty", "More"]
+	}
+};
+
 // Simple bar with custom tick values
 export const simpleBarDataCustomTicks = [
 	{ group: "Group 1", value: 0.5 },

@@ -12,6 +12,15 @@ export enum ChartTheme {
 }
 
 /**
+ * enum of all color classname types
+ */
+export enum ColorClassNameTypes {
+	FILL = "fill",
+	STROKE = "stroke",
+	TOOLTIP = "tooltip"
+}
+
+/**
  * enum of all possible axis positions
  */
 export enum AxisPositions {
@@ -19,6 +28,14 @@ export enum AxisPositions {
 	RIGHT = "right",
 	TOP = "top",
 	BOTTOM = "bottom"
+}
+
+/**
+ * enum of all possible axis positions
+ */
+export enum ZoomBarTypes {
+	GRAPH_VIEW = "graph_view",
+	SLIDER_VIEW = "slider_view"
 }
 
 /**
@@ -50,15 +67,6 @@ export enum ScaleTypes {
 	LINEAR = "linear",
 	LOG = "log",
 	LABELS = "labels"
-}
-
-/**
- * enum of supported tooltip position relative to
- */
-export enum TooltipPosition {
-	MOUSE = "mouse",
-	TOP = "top",
-	BOTTOM = "bottom"
 }
 
 /**
@@ -163,4 +171,22 @@ export enum Statuses {
 	SUCCESS = "success",
 	WARNING = "warning",
 	DANGER = "danger"
+}
+
+/**
+ * enum of axis ticks rotation
+ */
+export enum TickRotations {
+	ALWAYS = "always",
+	AUTO = "auto",
+	NEVER = "never"
+}
+
+/**
+ * enum of supported toolbar control types
+ */
+export enum ToolbarControlTypes {
+	ZOOM_IN = "Zoom in",
+	ZOOM_OUT = "Zoom out",
+	RESET_ZOOM = "Reset zoom"
 }

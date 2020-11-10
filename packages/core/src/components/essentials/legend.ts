@@ -1,6 +1,7 @@
 // Internal Imports
 import { Component } from "../component";
 import { Tools } from "../../tools";
+import { ColorClassNameTypes } from "../../interfaces/enums";
 import {
 	LegendOrientations,
 	Roles,
@@ -8,23 +9,30 @@ import {
 	TruncationTypes
 } from "../../interfaces";
 import { DOMUtils } from "../../services";
+import * as Configuration from "../../configuration";
 
 // D3 Imports
-import { select } from "d3-selection";
+import { select, event } from "d3-selection";
 
 export class Legend extends Component {
 	type = "legend";
 
 	render() {
-		const svg = this.getContainerSVG().attr(
-			"role",
-			`${Roles.GRAPHICS_DOCUMENT} ${Roles.DOCUMENT}`
-		);
+		const svg = this.getContainerSVG()
+			.attr("role", Roles.GROUP)
+			.attr("data-name", "legend-items");
 		const options = this.model.getOptions();
 		const legendOptions = Tools.getProperty(options, "legend");
+		let dataGroups = this.model.getDataGroups();
+		const legendOrder = Tools.getProperty(legendOptions, "order");
+
+		if (legendOrder) {
+			dataGroups = this.sortDataGroups(dataGroups, legendOrder);
+		}
+
 		const legendItems = svg
 			.selectAll("g.legend-item")
-			.data(this.model.getDataGroups(), (dataGroup) => dataGroup.name);
+			.data(dataGroups, (dataGroup) => dataGroup.name);
 
 		// this.getLegendItemArray()
 
@@ -33,11 +41,11 @@ export class Legend extends Component {
 			.append("g")
 			.classed("legend-item", true)
 			.classed("active", function (d, i) {
-				return d.status === options.legend.items.status.ACTIVE;
+				return d.status === Configuration.legend.items.status.ACTIVE;
 			});
 
 		// Configs
-		const checkboxRadius = options.legend.checkbox.radius;
+		const checkboxRadius = Configuration.legend.checkbox.radius;
 
 		// Truncation
 		// get user provided custom values for truncation
@@ -57,21 +65,45 @@ export class Legend extends Component {
 			"numCharacter"
 		);
 
+		const paletteOption = Tools.getProperty(
+			options,
+			"color",
+			"pairing",
+			"option"
+		);
+
 		addedLegendItems
 			.append("rect")
 			.classed("checkbox", true)
 			.merge(legendItems.select("rect.checkbox"))
+			.attr("role", Roles.CHECKBOX)
+			.attr("tabindex", 0)
+			.attr("aria-label", (d) => d.name)
+			.attr(
+				"aria-checked",
+				({ status }) =>
+					status === Configuration.legend.items.status.ACTIVE
+			)
 			.attr("width", checkboxRadius * 2)
 			.attr("height", checkboxRadius * 2)
 			.attr("rx", 1)
 			.attr("ry", 1)
+			.attr("class", (d, i) => {
+				if (paletteOption) {
+					return this.model.getColorClassName({
+						classNameTypes: [ColorClassNameTypes.FILL],
+						dataGroupName: d.name,
+						originalClassName: "checkbox"
+					});
+				}
+			})
 			.style("fill", (d) => {
-				return d.status === options.legend.items.status.ACTIVE
-					? this.model.getStrokeColor(d.name)
+				return d.status === Configuration.legend.items.status.ACTIVE
+					? this.model.getFillColor(d.name)
 					: null;
 			})
 			.classed("active", function (d, i) {
-				return d.status === options.legend.items.status.ACTIVE;
+				return d.status === Configuration.legend.items.status.ACTIVE;
 			});
 		const addedLegendItemsText = addedLegendItems
 			.append("text")
@@ -125,22 +157,41 @@ export class Legend extends Component {
 		svg.attr("transform", `translate(${alignmentOffset}, 0)`);
 	}
 
+	sortDataGroups(dataGroups, legendOrder) {
+		// Sort data in user defined order
+		dataGroups.sort(
+			(dataA, dataB) =>
+				legendOrder.indexOf(dataA.name) -
+				legendOrder.indexOf(dataB.name)
+		);
+
+		// If user only defined partial ordering, ordered items are placed before unordered ones
+		if (legendOrder.length < dataGroups.length) {
+			const definedOrderIndex = dataGroups.length - legendOrder.length;
+			const definedOrder = dataGroups.slice(definedOrderIndex);
+
+			return definedOrder.concat(dataGroups.slice(0, definedOrderIndex));
+		}
+		return dataGroups;
+	}
+
 	breakItemsIntoLines(addedLegendItems) {
 		const self = this;
 		const svg = this.getContainerSVG();
 		const options = this.model.getOptions();
 
 		// Configs
-		const checkboxRadius = options.legend.checkbox.radius;
+		const checkboxRadius = Configuration.legend.checkbox.radius;
 		const legendItemsHorizontalSpacing =
-			options.legend.items.horizontalSpace;
-		const legendItemsVerticalSpacing = options.legend.items.verticalSpace;
-		const legendTextYOffset = options.legend.items.textYOffset;
+			Configuration.legend.items.horizontalSpace;
+		const legendItemsVerticalSpacing =
+			Configuration.legend.items.verticalSpace;
+		const legendTextYOffset = Configuration.legend.items.textYOffset;
 		const spaceNeededForCheckbox =
-			checkboxRadius * 2 + options.legend.checkbox.spaceAfter;
+			checkboxRadius * 2 + Configuration.legend.checkbox.spaceAfter;
 
 		// Check if there are disabled legend items
-		const { DISABLED } = options.legend.items.status;
+		const { DISABLED } = Configuration.legend.items.status;
 		const dataGroups = this.model.getDataGroups();
 		const hasDeactivatedItems = dataGroups.some(
 			(dataGroup) => dataGroup.status === DISABLED
@@ -304,8 +355,10 @@ export class Legend extends Component {
 				});
 
 				// Configs
-				const checkboxRadius = options.legend.checkbox.radius;
+				const checkboxRadius = Configuration.legend.checkbox.radius;
 				const hoveredItem = select(this);
+				hoveredItem.select("rect.checkbox").classed("hovered", true);
+
 				hoveredItem
 					.append("rect")
 					.classed("hover-stroke", true)
@@ -351,6 +404,7 @@ export class Legend extends Component {
 			.on("mouseout", function () {
 				const hoveredItem = select(this);
 				hoveredItem.select("rect.hover-stroke").remove();
+				hoveredItem.select("rect.checkbox").classed("hovered", false);
 
 				self.services.events.dispatchEvent(Events.Tooltip.HIDE);
 
@@ -361,5 +415,13 @@ export class Legend extends Component {
 					}
 				);
 			});
+
+		svg.selectAll("g.legend-item rect.checkbox").on("keyup", function (d) {
+			if (event.key && (event.key === "Enter" || event.key === " ")) {
+				event.preventDefault();
+
+				self.model.toggleDataLabel(d.name);
+			}
+		});
 	}
 }

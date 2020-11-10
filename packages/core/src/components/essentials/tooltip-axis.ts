@@ -1,5 +1,9 @@
 import { Tooltip } from "./tooltip";
-import { AxisPositions, ScaleTypes } from "../../interfaces";
+import {
+	AxisPositions,
+	ScaleTypes,
+	ColorClassNameTypes
+} from "../../interfaces";
 import { Tools } from "../../tools";
 
 import { format } from "date-fns";
@@ -65,10 +69,7 @@ export class AxisChartsTooltip extends Tooltip {
 					rangeLabel = "x-value";
 				}
 			}
-			let rangeValue = datum[rangeIdentifier];
-			if (rangeAxisScaleType === ScaleTypes.LINEAR) {
-				rangeValue = rangeValue.toLocaleString();
-			}
+
 			items = [
 				{
 					label: domainLabel,
@@ -76,12 +77,16 @@ export class AxisChartsTooltip extends Tooltip {
 				},
 				{
 					label: rangeLabel,
-					value: rangeValue
+					value: datum[rangeIdentifier]
 				},
 				{
-					label: "Group",
+					label: options.tooltip.groupLabel || "Group",
 					value: datum[groupMapsTo],
-					color: this.model.getStrokeColor(datum[groupMapsTo])
+					color: this.model.getFillColor(datum[groupMapsTo]),
+					class: this.model.getColorClassName({
+						classNameTypes: [ColorClassNameTypes.TOOLTIP],
+						dataGroupName: datum[groupMapsTo]
+					})
 				}
 			];
 		} else if (data.length > 1) {
@@ -97,14 +102,18 @@ export class AxisChartsTooltip extends Tooltip {
 					.map((datum) => ({
 						label: datum[groupMapsTo],
 						value: this.valueFormatter(datum[rangeIdentifier]),
-						color: this.model.getStrokeColor(datum[groupMapsTo])
+						color: this.model.getFillColor(datum[groupMapsTo]),
+						class: this.model.getColorClassName({
+							classNameTypes: [ColorClassNameTypes.TOOLTIP],
+							dataGroupName: datum[groupMapsTo]
+						})
 					}))
 					.sort((a, b) => b.value - a.value)
 			);
 
 			if (Tools.getProperty(options, "tooltip", "showTotal") === true) {
 				items.push({
-					label: "Total",
+					label: options.tooltip.totalLabel || "Total",
 					value: this.valueFormatter(
 						data.reduce(
 							(accumulator, datum) =>

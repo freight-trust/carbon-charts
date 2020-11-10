@@ -18,6 +18,14 @@ export enum Model {
 }
 
 /**
+ * enum of all toolbar events
+ */
+export enum Toolbar {
+	SHOW_OVERFLOW_MENU = "show-toolbar-overflow-menu",
+	HIDE_OVERFLOW_MENU = "hide-toolbar-overflow-menu"
+}
+
+/**
  * enum of all events related to the zoom-bar
  */
 export enum ZoomBar {
@@ -25,6 +33,13 @@ export enum ZoomBar {
 	SELECTION_START = "zoom-bar-selection-start",
 	SELECTION_IN_PROGRESS = "zoom-bar-selection-in-progress",
 	SELECTION_END = "zoom-bar-selection-end"
+}
+
+/**
+ * enum of all events related to the zoom domain
+ */
+export enum ZoomDomain {
+	CHANGE = "zoom-domain-change"
 }
 
 /**
@@ -105,6 +120,16 @@ export enum Radar {
 	X_AXIS_MOUSEMOVE = "radar-x-axis-mousemove",
 	X_AXIS_CLICK = "radar-x-axis-click",
 	X_AXIS_MOUSEOUT = "radar-x-axis-mouseout"
+}
+
+/**
+ * enum of all treemap graph events
+ */
+export enum Treemap {
+	LEAF_MOUSEOVER = "leaf-mouseover",
+	LEAF_MOUSEMOVE = "leaf-mousemove",
+	LEAF_CLICK = "leaf-click",
+	LEAF_MOUSEOUT = "leaf-mouseout"
 }
 
 /**

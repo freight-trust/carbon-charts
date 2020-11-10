@@ -12,19 +12,26 @@ import {
 	DonutChartOptions,
 	BubbleChartOptions,
 	RadarChartOptions,
+	TreemapChartOptions,
 	// Components
 	GridOptions,
+	RulerOptions,
 	AxesOptions,
 	TimeScaleOptions,
 	TooltipOptions,
 	LegendOptions,
-	LegendPositions,
-	TruncationTypes,
 	StackedBarOptions,
 	MeterChartOptions,
-	GaugeTypes,
+	ToolbarOptions,
+	ToolbarControl,
+	ZoomBarsOptions,
+	// ENUMS
 	Alignments,
-	ZoomBarsOptions
+	GaugeTypes,
+	LegendPositions,
+	TruncationTypes,
+	ToolbarControlTypes,
+	ZoomBarTypes
 } from "./interfaces";
 import enUSLocaleObject from "date-fns/locale/en-US/index";
 
@@ -46,25 +53,13 @@ const standardTruncationOptions = {
 /**
  * Legend options
  */
-export const legend: LegendOptions = {
+const legend: LegendOptions = {
 	enabled: true,
 	position: LegendPositions.BOTTOM,
 	clickable: true,
-	items: {
-		status: {
-			ACTIVE: 1,
-			DISABLED: 0
-		},
-		horizontalSpace: 12,
-		verticalSpace: 24,
-		textYOffset: 8
-	},
-	checkbox: {
-		radius: 6.5,
-		spaceAfter: 4
-	},
 	truncation: standardTruncationOptions,
-	alignment: Alignments.LEFT
+	alignment: Alignments.LEFT,
+	order: null
 };
 
 /**
@@ -72,18 +67,30 @@ export const legend: LegendOptions = {
  */
 export const grid: GridOptions = {
 	x: {
-		numberOfTicks: 5
+		// set enable to false will not draw grid and stroke of grid backdrop
+		enabled: true,
+		numberOfTicks: 15
 	},
 	y: {
+		// set enable to false will not draw grid and stroke of grid backdrop
+		enabled: true,
 		numberOfTicks: 5
 	}
+};
+
+/**
+ * Ruler options
+ */
+export const ruler: RulerOptions = {
+	// enable or disable ruler
+	enabled: true
 };
 
 /**
  * Tooltip options
  */
 export const baseTooltip: TooltipOptions = {
-	horizontalOffset: 10,
+	enabled: true,
 	showTotal: true,
 	valueFormatter: (d) => d.toLocaleString(),
 	truncation: standardTruncationOptions
@@ -94,18 +101,22 @@ export const baseTooltip: TooltipOptions = {
 // and by TwoDimensionalAxes.
 const axes: AxesOptions = {
 	top: {
+		visible: true,
 		includeZero: true,
 		truncation: standardTruncationOptions
 	},
 	bottom: {
+		visible: true,
 		includeZero: true,
 		truncation: standardTruncationOptions
 	},
 	left: {
+		visible: true,
 		includeZero: true,
 		truncation: standardTruncationOptions
 	},
 	right: {
+		visible: true,
 		includeZero: true,
 		truncation: standardTruncationOptions
 	}
@@ -146,7 +157,14 @@ const chart: BaseChartOptions = {
 		selectedGroups: []
 	},
 	color: {
-		scale: null
+		scale: null,
+		pairing: {
+			numberOfVariants: null,
+			option: 1
+		},
+		gradient: {
+			enabled: false
+		}
 	}
 };
 
@@ -157,11 +175,21 @@ const axisChart: AxisChartOptions = Tools.merge({}, chart, {
 	axes,
 	timeScale,
 	grid,
+	ruler,
 	zoomBar: {
+		zoomRatio: 0.4,
+		minZoomRatio: 0.01,
 		top: {
-			enabled: false
-		}
-	} as ZoomBarsOptions
+			enabled: false,
+			type: ZoomBarTypes.GRAPH_VIEW
+		},
+		updateRangeAxis: false
+	} as ZoomBarsOptions,
+	toolbar: {
+		enabled: false,
+		numberOfIcons: 3,
+		controls: []
+	} as ToolbarOptions
 } as AxisChartOptions);
 
 /**
@@ -204,13 +232,27 @@ const stackedBarChart: StackedBarChartOptions = Tools.merge({}, baseBarChart, {
 } as BarChartOptions);
 
 /**
+ * options specific to scatter charts
+ */
+const scatterChart: ScatterChartOptions = Tools.merge({}, axisChart, {
+	points: {
+		// default point radius to 4
+		radius: 4,
+		fillOpacity: 0.3,
+		filled: true,
+		enabled: true
+	}
+} as ScatterChartOptions);
+
+/**
  * options specific to line charts
  */
-const lineChart: LineChartOptions = Tools.merge({}, axisChart, {
+const lineChart: LineChartOptions = Tools.merge({}, scatterChart, {
 	points: {
 		// default point radius to 3
 		radius: 3,
-		filled: false
+		filled: false,
+		enabled: true
 	}
 } as LineChartOptions);
 
@@ -229,18 +271,6 @@ const areaChart: AreaChartOptions = Tools.merge({}, lineChart, {
 const stackedAreaChart = areaChart;
 
 /**
- * options specific to scatter charts
- */
-const scatterChart: ScatterChartOptions = Tools.merge({}, axisChart, {
-	points: {
-		// default point radius to 4
-		radius: 4,
-		fillOpacity: 0.3,
-		filled: true
-	}
-} as ScatterChartOptions);
-
-/**
  * options specific to bubble charts
  */
 const bubbleChart: BubbleChartOptions = Tools.merge({}, axisChart, {
@@ -256,7 +286,8 @@ const bubbleChart: BubbleChartOptions = Tools.merge({}, axisChart, {
 				(smallerChartDimension * 25) / 400
 			];
 		},
-		fillOpacity: 0.2
+		fillOpacity: 0.2,
+		enabled: true
 	}
 } as BubbleChartOptions);
 
@@ -265,22 +296,6 @@ const bubbleChart: BubbleChartOptions = Tools.merge({}, axisChart, {
  */
 const pieChart: PieChartOptions = Tools.merge({}, chart, {
 	pie: {
-		radiusOffset: -15,
-		innerRadius: 2,
-		padAngle: 0.007,
-		hoverArc: {
-			outerRadiusOffset: 3
-		},
-		xOffset: 30,
-		yOffset: 20,
-		yOffsetCallout: 10,
-		callout: {
-			minSliceDegree: 5,
-			offsetX: 15,
-			offsetY: 12,
-			horizontalLineLength: 8,
-			textMargin: 2
-		},
 		labels: {
 			formatter: null
 		},
@@ -309,7 +324,8 @@ const gaugeChart: GaugeChartOptions = Tools.merge({}, chart, {
 		numberFormatter: (number) =>
 			number.toFixed(2) % 1 !== 0
 				? number.toFixed(2).toLocaleString()
-				: number.toFixed().toLocaleString()
+				: number.toFixed().toLocaleString(),
+		alignment: Alignments.LEFT
 	}
 } as GaugeChartOptions);
 
@@ -336,17 +352,12 @@ const meterChart: MeterChartOptions = Tools.merge({}, chart, {
 	meter: {
 		height: 8,
 		statusBar: {
-			paddingRight: 5,
 			percentageIndicator: {
 				enabled: true
 			}
-		},
-		status: {
-			indicatorSize: 16,
-			paddingLeft: 15
 		}
 	}
-});
+} as MeterChartOptions);
 
 /**
  * options specific to radar charts
@@ -357,16 +368,6 @@ const radarChart: RadarChartOptions = Tools.merge({}, chart, {
 			angle: "key",
 			value: "value"
 		},
-		opacity: {
-			unselected: 0.1,
-			selected: 0.3
-		},
-		xLabelPadding: 10,
-		yLabelPadding: 8,
-		yTicksNumber: 4,
-		minRange: 10,
-		xAxisRectHeight: 50,
-		dotsRadius: 5,
 		alignment: Alignments.LEFT
 	},
 	tooltip: {
@@ -377,6 +378,15 @@ const radarChart: RadarChartOptions = Tools.merge({}, chart, {
 			value !== null && value !== undefined ? value : "N/A"
 	}
 } as RadarChartOptions);
+
+/**
+ * options specific to treemap charts
+ */
+const treemapChart: TreemapChartOptions = Tools.merge({}, chart, {
+	data: Tools.merge(chart.data, {
+		groupMapsTo: "name"
+	})
+} as TreemapChartOptions);
 
 export const options = {
 	chart,
@@ -393,78 +403,8 @@ export const options = {
 	donutChart,
 	meterChart,
 	radarChart,
-	gaugeChart
+	gaugeChart,
+	treemapChart
 };
 
-/**
- * Options for line behaviour
- */
-export const lines = {
-	opacity: {
-		unselected: 0.3,
-		selected: 1
-	}
-};
-
-/**
- * Options for area behaviour
- */
-export const area = {
-	opacity: {
-		unselected: 0,
-		selected: 0.4
-	}
-};
-
-/**
- * Options for area behaviour
- */
-export const areas = {
-	opacity: {
-		unselected: 0.3,
-		selected: 1
-	}
-};
-
-/**
- * Base transition configuration
- */
-export const transitions = {
-	default: {
-		duration: 300
-	},
-	pie_slice_mouseover: {
-		duration: 100
-	},
-	pie_chart_titles: {
-		duration: 375
-	},
-	graph_element_mouseover_fill_update: {
-		duration: 100
-	},
-	graph_element_mouseout_fill_update: {
-		duration: 100
-	}
-};
-
-export const axis = {
-	ticks: {
-		number: 7,
-		rotateIfSmallerThan: 30
-	},
-	paddingRatio: 0.1
-};
-
-export const spacers = {
-	default: {
-		size: 24
-	}
-};
-
-export const zoomBar = {
-	height: 32,
-	spacerHeight: 20
-};
-
-export const tickSpaceRatioVertical = 2.5;
-export const tickSpaceRatioHorizontal = 3.5;
+export * from "./configuration-non-customizable";

@@ -1,7 +1,6 @@
 // Internal Imports
 import * as Configuration from "./configuration";
 import { ChartModel } from "./model";
-import * as colorPalettes from "./services/colorPalettes";
 import { Tools } from "./tools";
 
 /** The meter chart model layer which extends some of the data setting options.
@@ -52,6 +51,9 @@ export class MeterChartModel extends ChartModel {
 		const options = this.getOptions();
 		const dataValue = this.getDisplayData().value;
 
+		// use max value if the percentage is bigger than 100%
+		const boundedValue = dataValue > 100 ? 100 : dataValue;
+
 		// user needs to supply ranges
 		const allRanges = Tools.getProperty(
 			options,
@@ -59,10 +61,12 @@ export class MeterChartModel extends ChartModel {
 			"status",
 			"ranges"
 		);
+
 		if (allRanges) {
 			const result = allRanges.filter(
 				(step) =>
-					step.range[0] <= dataValue && dataValue <= step.range[1]
+					step.range[0] <= boundedValue &&
+					boundedValue <= step.range[1]
 			);
 			if (result.length > 0) {
 				return result[0].status;

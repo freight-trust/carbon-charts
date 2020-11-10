@@ -86,9 +86,9 @@ export interface BaseChartOptions {
 		 */
 		groupMapsTo?: string;
 		/**
-		 * used to simulate data loading
+		 * used to simulate data loading in skeleton way
 		 */
-		loading?: Boolean;
+		loading?: boolean;
 		/**
 		 * options related to pre-selected data groups
 		 * Remains empty if every legend item is active or dataset doesn't have the data groups.
@@ -103,6 +103,25 @@ export interface BaseChartOptions {
 		 * e.g. { "Dataset 1": "blue" }
 		 */
 		scale?: object;
+		/**
+		 * use a carbon dataviz preset color palette
+		 * put the index (selection of which variant)
+		 */
+		pairing?: {
+			/**
+			 * the number of color variants in the palette (defaults to using the number of data groups in the given data)
+			 */
+			numberOfVariants?: number;
+			/**
+			 * the option number of the color paring
+			 */
+			option?: number;
+		};
+		/*
+		 * options related to gradient
+		 * e.g. { enabled: true }
+		 */
+		gradient?: object;
 	};
 }
 
@@ -147,6 +166,7 @@ export interface ScatterChartOptions extends AxisChartOptions {
 		radius: number;
 		fillOpacity?: number;
 		filled?: boolean;
+		enabled?: boolean;
 	};
 }
 
@@ -171,6 +191,10 @@ export interface BubbleChartOptions extends AxisChartOptions {
 		 * Opacity of the fills used within each circle
 		 */
 		fillOpacity?: number;
+		/**
+		 * enabled scatter dot or not
+		 */
+		enabled?: boolean;
 	};
 }
 
@@ -221,22 +245,6 @@ export interface StackedAreaChartOptions extends ScatterChartOptions {
  */
 export interface PieChartOptions extends BaseChartOptions {
 	pie?: {
-		radiusOffset?: number;
-		innerRadius?: number;
-		padAngle?: number;
-		hoverArc?: {
-			outerRadiusOffset?: number;
-		};
-		xOffset?: number;
-		yOffset?: number;
-		yOffsetCallout?: number;
-		callout?: {
-			minSliceDegree?: number;
-			offsetX?: number;
-			offsetY?: number;
-			horizontalLineLength?: number;
-			textMargin?: number;
-		};
 		labels?: {
 			formatter?: Function;
 		};
@@ -247,7 +255,7 @@ export interface PieChartOptions extends BaseChartOptions {
 /**
  * options specific to gauge charts
  */
-export interface GaugeChartOptions extends PieChartOptions {
+export interface GaugeChartOptions extends BaseChartOptions {
 	gauge?: {
 		arcWidth?: number;
 		deltaArrow?: {
@@ -261,6 +269,7 @@ export interface GaugeChartOptions extends PieChartOptions {
 		numberFormatter?: Function;
 		valueFontSize?: Function;
 		type?: GaugeTypes;
+		alignment?: Alignments;
 	};
 }
 
@@ -284,20 +293,12 @@ export interface MeterChartOptions extends BaseChartOptions {
 	meter?: {
 		height?: number;
 		title?: {
-			/**
-			 * offsets the percentage value from the title
-			 */
-			paddingRight?: number;
 			percentageIndicator?: {
 				/**
 				 * rendering of the percentage value relative to the dataset within title
 				 */
 				enabled?: boolean;
 			};
-		};
-		status?: {
-			indicatorSize?: number;
-			paddingLeft?: number;
 		};
 	};
 }
@@ -307,20 +308,15 @@ export interface MeterChartOptions extends BaseChartOptions {
  */
 export interface RadarChartOptions extends BaseChartOptions {
 	radar?: {
-		opacity: {
-			unselected: number;
-			selected: number;
-		};
 		axes: {
 			angle: string;
 			value: string;
 		};
-		xLabelPadding: number;
-		yLabelPadding: number;
-		yTicksNumber: number;
-		minRange: number;
-		xAxisRectHeight: number;
-		dotsRadius: number;
 		alignment?: Alignments;
 	};
 }
+
+/**
+ * options specific to treemap charts
+ */
+export interface TreemapChartOptions extends BaseChartOptions {}

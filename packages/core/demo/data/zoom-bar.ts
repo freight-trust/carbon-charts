@@ -25,21 +25,34 @@ const definedZoomBarData = [
 ];
 
 // utility function to update title and enable zoomBar option
-const addZoomBarToOptions = (options, includeDefinedZoomBarData = false) => {
+export const addZoomBarToOptions = (
+	options,
+	configs: any = { includeDefinedZoomBarData: false }
+) => {
 	options["experimental"] = true;
-	if (includeDefinedZoomBarData) {
-		options["title"] = options["title"] + " - Defined zoom bar enabled";
-		options["zoomBar"] = {
+	if (configs.includeDefinedZoomBarData) {
+		options.title += " - Defined zoom bar enabled";
+		options.zoomBar = {
 			top: {
 				enabled: true,
-				data: definedZoomBarData
+				data: definedZoomBarData,
+				...(configs.sliderView
+					? {
+							type: "slider_view"
+					  }
+					: null)
 			}
 		};
 	} else {
-		options["title"] = options["title"] + " - Zoom bar enabled";
-		options["zoomBar"] = {
+		options.title += " - Zoom bar enabled";
+		options.zoomBar = {
 			top: {
-				enabled: true
+				enabled: true,
+				...(configs.sliderView
+					? {
+							type: "slider_view"
+					  }
+					: null)
 			}
 		};
 	}
@@ -54,7 +67,8 @@ export const zoomBarStackedAreaTimeSeriesOptions = addZoomBarToOptions(
 
 export const zoomBarSimpleBarTimeSeriesData = barChart.simpleBarTimeSeriesData;
 export const zoomBarSimpleBarTimeSeriesOptions = addZoomBarToOptions(
-	Object.assign({}, barChart.simpleBarTimeSeriesOptions)
+	Object.assign({}, barChart.simpleBarTimeSeriesOptions),
+	{ sliderView: true }
 );
 
 export const zoomBarStackedBarTimeSeriesData =
@@ -67,12 +81,13 @@ export const definedZoomBarStackedBarTimeSeriesData =
 	barChart.stackedBarTimeSeriesData;
 export const definedZoomBarStackedBarTimeSeriesOptions = addZoomBarToOptions(
 	Object.assign({}, barChart.stackedBarTimeSeriesOptions),
-	true
+	{ includeDefinedZoomBarData: true }
 );
 
 export const zoomBarBubbleTimeSeriesData = bubbleChart.bubbleTimeSeriesData;
 export const zoomBarBubbleTimeSeriesOptions = addZoomBarToOptions(
-	Object.assign({}, bubbleChart.bubbleTimeSeriesOptions)
+	Object.assign({}, bubbleChart.bubbleTimeSeriesOptions),
+	{ sliderView: true }
 );
 
 export const zoomBarLineTimeSeriesData = lineChart.lineTimeSeriesData;
@@ -87,7 +102,8 @@ export const zoomBarScatterTimeSeriesOptions = addZoomBarToOptions(
 
 export const zoomBarStepTimeSeriesData = stepChart.stepTimeSeriesData;
 export const zoomBarStepTimeSeriesOptions = addZoomBarToOptions(
-	Object.assign({}, stepChart.stepTimeSeriesOptions)
+	Object.assign({}, stepChart.stepTimeSeriesOptions),
+	{ sliderView: true }
 );
 
 export const zoomBarLineTimeSeries15secondsData =
@@ -99,10 +115,112 @@ export const zoomBarLineTimeSeries15secondsOptions = addZoomBarToOptions(
 export const zoomBarLineTimeSeriesInitDomainData =
 	timeSeriesAxisChart.lineTimeSeriesData15seconds;
 export const zoomBarLineTimeSeriesInitDomainOptions = addZoomBarToOptions(
-	Object.assign({}, timeSeriesAxisChart.lineTimeSeries15secondsOptions)
+	Object.assign({}, timeSeriesAxisChart.lineTimeSeries15secondsOptions),
+	{ sliderView: true }
 );
-zoomBarLineTimeSeriesInitDomainOptions["title"] += " (initial zoomed domain)";
+zoomBarLineTimeSeriesInitDomainOptions.title += " (initial zoomed domain)";
 zoomBarLineTimeSeriesInitDomainOptions.zoomBar.top.initialZoomDomain = initialZoomDomain;
+
+export const zoomBarStringDateData = {
+	labels: ["Qty"],
+	datasets: [
+		{
+			label: "Dataset 1",
+			data: [
+				{
+					date: "2020-12-10T15:59:15.000Z",
+					value: 10
+				},
+				{
+					date: "2020-12-10T15:59:30.000Z",
+					value: 15
+				},
+				{
+					date: "2020-12-10T15:59:45.000Z",
+					value: 7
+				},
+				{
+					date: "2020-12-10T16:00:00.000Z",
+					value: 2
+				},
+				{
+					date: "2020-12-10T16:00:15.000Z",
+					value: 9
+				},
+				{
+					date: "2020-12-10T16:00:30.000Z",
+					value: 13
+				},
+				{
+					date: "2020-12-10T16:00:45.000Z",
+					value: 8
+				}
+			]
+		}
+	]
+};
+export const zoomBarStringDateOptions = addZoomBarToOptions({
+	title: "String dates",
+	axes: {
+		left: {},
+		bottom: {
+			scaleType: "time"
+		}
+	}
+});
+zoomBarStringDateOptions.zoomBar.top.initialZoomDomain = [
+	"2020-12-10T15:59:25.000Z",
+	"2020-12-10T16:00:25.000Z"
+];
+zoomBarStringDateOptions.zoomBar.top.data = [
+	{
+		date: "2020-12-10T15:59:15.000Z",
+		value: 15
+	},
+	{
+		date: "2020-12-10T15:59:30.000Z",
+		value: 10
+	},
+	{
+		date: "2020-12-10T15:59:45.000Z",
+		value: 2
+	},
+	{
+		date: "2020-12-10T16:00:00.000Z",
+		value: 15
+	},
+	{
+		date: "2020-12-10T16:00:15.000Z",
+		value: 13
+	},
+	{
+		date: "2020-12-10T16:00:30.000Z",
+		value: 3
+	},
+	{
+		date: "2020-12-10T16:00:45.000Z",
+		value: 10
+	}
+];
+
+export const zoomBarLockedData = [];
+export const zoomBarLockedOptions = addZoomBarToOptions(
+	Object.assign(
+		{
+			data: {
+				loading: true
+			}
+		},
+		barChart.stackedBarTimeSeriesOptions
+	),
+	{ includeDefinedZoomBarData: true }
+);
+zoomBarLockedOptions.title = "Zoom bar (Locked)";
+zoomBarLockedOptions.zoomBar.top.locked = true;
+zoomBarLockedOptions.zoomBar.top.initialZoomDomain = [
+	new Date(2019, 0, 3),
+	new Date(2019, 0, 15)
+];
 
 // assume no data set while loading is true
 export const zoomBarSkeletonData = [];
@@ -117,3 +235,4 @@ export const zoomBarSkeletonOptions = addZoomBarToOptions(
 	)
 );
 zoomBarSkeletonOptions["title"] = "Zoom bar (skeleton)";
+zoomBarSkeletonOptions.zoomBar.top.loading = true;

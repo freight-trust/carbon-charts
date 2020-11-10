@@ -1,4 +1,10 @@
-import { LayoutGrowth, LegendPositions, Alignments } from "./enums";
+import {
+	LayoutGrowth,
+	LegendPositions,
+	Alignments,
+	ToolbarControlTypes,
+	ZoomBarTypes
+} from "./enums";
 import { Component } from "../components/component";
 import { TruncationOptions } from "./truncation";
 
@@ -34,24 +40,16 @@ export interface LegendOptions {
 	 * the clickability of legend items
 	 */
 	clickable?: boolean;
-	items?: {
-		status?: {
-			ACTIVE?: Number;
-			DISABLED?: Number;
-		};
-		horizontalSpace?: Number;
-		verticalSpace?: Number;
-		textYOffset?: Number;
-	};
-	checkbox?: {
-		radius?: Number;
-		spaceAfter?: Number;
-	};
 	truncation?: TruncationOptions;
 	alignment?: Alignments;
+	order?: string[];
 }
 
 export interface TooltipOptions {
+	/**
+	 * enable or disable tooltip
+	 */
+	enabled?: boolean;
 	/**
 	 * a function to format the tooltip values
 	 */
@@ -62,13 +60,17 @@ export interface TooltipOptions {
 	 */
 	customHTML?: Function;
 	/**
-	 * offset of the tooltip from the mouse position
+	 * customizes the `Group` label shown inside tooltips
 	 */
-	horizontalOffset?: number;
+	groupLabel?: string;
 	/**
 	 * show total of items
 	 */
 	showTotal?: boolean;
+	/**
+	 * customizes the `Total` label shown inside tooltips
+	 */
+	totalLabel?: string;
 	truncation?: TruncationOptions;
 }
 
@@ -96,12 +98,20 @@ export interface ThresholdOptions {
 
 export interface GridOptions {
 	y?: {
+		enabled?: boolean;
 		numberOfTicks?: number;
 	};
 	x?: {
+		enabled?: boolean;
 		numberOfTicks?: number;
 	};
-	strokeColor?: string;
+}
+
+/**
+ * Ruler options
+ */
+export interface RulerOptions {
+	enabled?: boolean;
 }
 
 export interface BarOptions {
@@ -114,13 +124,62 @@ export interface StackedBarOptions extends BarOptions {
 }
 
 /**
+ * customize the Toolbar component
+ */
+export interface ToolbarOptions {
+	/**
+	 * is the toolbar visible or not
+	 */
+	enabled?: boolean;
+	/**
+	 * the maximum toolbar controls to be displayed as icons
+	 * controls more than this number will appear in the overflow menu
+	 * minimum is 1. (all toolbar controls are in overflow menu)
+	 */
+	numberOfIcons?: number;
+	/**
+	 * toolbar controls which will be displayed following the array order
+	 */
+	controls?: ToolbarControl[];
+}
+
+/**
+ * options for each toolbar control
+ */
+export interface ToolbarControl {
+	/**
+	 * the toolbar control type
+	 */
+	type: ToolbarControlTypes;
+	/**
+	 * the text to display (if this control is displayed in overflow menu)
+	 * type value will be displayed if text is not available
+	 */
+	text?: string;
+}
+
+/**
  * customize the ZoomBars in a chart
  */
 export interface ZoomBarsOptions {
 	/**
+	 * a variable to handle default zoom in ratio (0 ~ 1.0)
+	 * ex: shift click zoom in ratio
+	 */
+	zoomRatio?: number;
+	/**
+	 * a variable to define the minimum zoom ratio (0 ~ 1.0)
+	 * If  ( zoom domain / max domain ) < minZoomRatio, zoom-in functions will be disabled
+	 */
+	minZoomRatio?: number;
+	/**
 	 * currently only the top position is supported
 	 */
 	top?: ZoomBarOptions;
+	/**
+	 * whether keep updating range axis in real time while zoom domain is changing
+	 */
+	updateRangeAxis?: boolean;
 }
 
 /**
@@ -131,7 +190,18 @@ export interface ZoomBarOptions {
 	 * is the zoom-bar visible or not
 	 */
 	enabled?: boolean;
-
+	/**
+	 * is the zoom-bar in loading state
+	 */
+	loading?: boolean;
+	/**
+	 * is the zoom-bar in locked state
+	 */
+	locked?: boolean;
+	/**
+	 * whether the zoom bar is showing a slider view or a graph view etc.
+	 */
+	type?: ZoomBarTypes;
 	/**
 	 * an two element array which represents the initial zoom domain
 	 */
